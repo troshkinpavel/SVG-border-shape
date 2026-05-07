@@ -1,0 +1,652 @@
+/*
+ * Layered stylesheet — declared in cascade order. Each @layer below maps
+ * 1:1 to a region of the page so jumping by section is straightforward.
+ */
+@layer tokens, base, intro, support, controls, presets, stage, card, shapes, viz, output, credits;
+
+
+@layer tokens {
+  :root {
+    color-scheme: dark;
+    --bg: #1a1a1c;
+    --card: #0a0a0a;
+    --edge: #e4e4e7;
+    --ui-bg: #1f1f22;
+    --ui-border: #2e2e32;
+    --ui-text: #d4d4d8;
+    --ui-muted: #71717a;
+  }
+}
+
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+
+  body {
+    color: var(--ui-text);
+    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+
+  main {
+    width: min(900px, 96vw);
+    display: grid;
+    gap: 20px;
+  }
+}
+
+
+@layer intro {
+  .intro {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .intro h1 {
+    margin: 0;
+    font: 600 clamp(28px, 4.2vw, 42px)/1.05 ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    color: #f4f4f5;
+  }
+
+  .intro h1 span {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 600;
+    background: linear-gradient(135deg, #c084fc 0%, #34d399 50%, #fb7185 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .intro-sub {
+    margin: 0;
+    max-width: 64ch;
+    font: 14px/1.55 ui-sans-serif, system-ui, sans-serif;
+    color: var(--ui-muted);
+  }
+
+  .intro-sub code {
+    background: #0e0e10;
+    color: #c5c5c9;
+    padding: 1px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--ui-border);
+    font-size: 0.9em;
+  }
+
+  .intro-sub strong {
+    color: var(--ui-text);
+  }
+}
+
+
+@layer support {
+  /*
+   * Driven by @supports — only one pill is ever visible. The "ok" pill
+   * renders when the engine knows about border-shape: shape(); the "bad"
+   * pill renders for everything else.
+   */
+  .support {
+    display: none;
+    align-self: start;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font: 12px/1.35 ui-sans-serif, system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  }
+
+  .support code {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    color: inherit;
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 0.95em;
+  }
+
+  .support--ok {
+    color: #052e16;
+    background: #bbf7d0;
+    border: 1px solid #4ade80;
+  }
+
+  .support--bad {
+    color: #450a0a;
+    background: #fecaca;
+    border: 1px solid #f87171;
+  }
+
+  @supports (border-shape: shape(from 0 0, close)) {
+    .support--ok { display: inline-flex; }
+  }
+
+  @supports not (border-shape: shape(from 0 0, close)) {
+    .support--bad { display: inline-flex; }
+  }
+}
+
+
+@layer controls {
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+  }
+
+  .controls label {
+    display: grid;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--ui-muted);
+  }
+
+  .controls input[type="number"] {
+    width: 100px;
+    padding: 6px 8px;
+    background: #0e0e10;
+    color: var(--ui-text);
+    border: 1px solid var(--ui-border);
+    border-radius: 6px;
+    font: inherit;
+  }
+
+  .controls .file { flex: 1 1 240px; }
+
+  .controls .lock {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    align-self: end;
+    padding-bottom: 6px;
+    color: var(--ui-text);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .controls .lock input { accent-color: #c084fc; }
+
+  .controls input[type="file"] {
+    color: var(--ui-text);
+    font: inherit;
+  }
+}
+
+
+@layer presets {
+  /*
+   * Quick-pick row of SVG thumbnails. Click a tile to swap the active SVG
+   * frame — same effect as uploading a file. The selected tile gets an
+   * accent border and tinted background.
+   */
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+  }
+
+  .preset {
+    --accent: #c084fc;
+    appearance: none;
+    width: 56px;
+    height: 56px;
+    padding: 8px;
+    background: #0e0e10;
+    border: 1px solid var(--ui-border);
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #d4d4d8;
+    transition: border-color 160ms, background 160ms, transform 160ms, color 160ms;
+  }
+
+  .preset:hover {
+    border-color: var(--accent);
+    color: #f4f4f5;
+    background: color-mix(in srgb, var(--accent) 8%, #0e0e10);
+  }
+
+  .preset:active { transform: translateY(1px); }
+
+  .preset:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .preset.is-active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 18%, #0e0e10);
+    color: #f4f4f5;
+  }
+
+  /* Inline-svg rendering — neutralize colored fills/strokes so the icons
+   * read consistently against the dark UI; the parent's `color` flows in
+   * via currentColor for any path that opted into it. */
+  .preset svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  /* Many of the source icons hard-code black fills/strokes — override
+   * those so the thumbnails inherit the button's color state. */
+  .preset svg [fill="#000000"],
+  .preset svg [fill="#020202"] { fill: currentColor; }
+  .preset svg [stroke="#000000"],
+  .preset svg [stroke="rgb(0, 0, 0)"],
+  .preset svg [stroke="#020202"] { stroke: currentColor; }
+}
+
+
+@layer stage {
+  .stage {
+    display: grid;
+    place-items: center;
+    min-height: 280px;
+    padding: 24px;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent 0 12px,
+        rgba(255, 255, 255, 0.015) 12px 24px
+      ),
+      var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+  }
+}
+
+
+@layer card {
+  .card {
+    background: var(--card-bg, var(--card));
+    border: var(--border-width, 3px) solid var(--border-color, var(--edge));
+    box-shadow:
+      0 30px 60px -20px rgba(0, 0, 0, 0.7),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+  }
+
+  .card[data-empty] {
+    border-style: dashed;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .card[data-empty] .card-text { display: none; }
+
+  /*
+   * .card-text covers the full border-box of .card (negative margin
+   * pulls it past the border) so its coordinate system matches the card
+   * outline path generated by JS — the shape-outside paths align
+   * pixel-for-pixel with border-shape.
+   */
+  .card-text {
+    --bw: var(--border-width, 3px);
+    margin: calc(-1 * var(--bw));
+    padding: 0;
+    width: calc(100% + var(--bw) * 2);
+    height: calc(100% + var(--bw) * 2);
+    font-family: var(--text-family, ui-sans-serif, system-ui, sans-serif);
+    font-size: var(--text-size, 13px);
+    line-height: var(--text-line-height, 1.5);
+    letter-spacing: var(--text-spacing, 0);
+    text-align: var(--text-align, left);
+    color: var(--text-color, var(--ui-text));
+    overflow: hidden;
+  }
+
+  .card-text code {
+    font: 12px ui-monospace, Menlo, Consolas, monospace;
+    color: #c084fc;
+  }
+}
+
+
+@layer shapes {
+  /*
+   * Two real shape carriers (not ::before / ::after). Pseudos can't be
+   * used because ::after renders *after* the text content — by then the
+   * top line is already occupied and ::after gets pushed to a new line.
+   * Real elements declared at the start of .card-text both float into
+   * place before any text is laid out.
+   */
+  .shape {
+    display: block;
+    width: 50%;
+    height: 100%;
+  }
+
+  .shape--l {
+    float: left;
+    shape-outside: var(--shape-left, none);
+  }
+
+  .shape--r {
+    float: right;
+    shape-outside: var(--shape-right, none);
+  }
+}
+
+
+@layer viz {
+  /*
+   * Shape overlay panel — a DevTools-style preview of what shape-outside
+   * actually computes. Shows the card outline plus the two exclusion
+   * polygons tinted with the same accents as the snippet cards.
+   */
+  .viz {
+    margin: 0;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .viz figcaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: var(--ui-muted);
+    font: 12px/1.2 ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .viz-legend {
+    display: inline-flex;
+    gap: 10px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+
+  .viz-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .viz-key::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.85;
+  }
+
+  .viz-key--outline { color: #e4e4e7; }
+  .viz-key--left    { color: #34d399; }
+  .viz-key--right   { color: #fb7185; }
+
+  .viz-stage {
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent 0 12px,
+        rgba(255, 255, 255, 0.02) 12px 24px
+      ),
+      #0e0e10;
+    border: 1px solid var(--ui-border);
+    border-radius: 8px;
+    padding: 16px;
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+  }
+
+  .viz-stage:empty::before {
+    content: 'Upload an SVG to see the shape overlay.';
+    color: var(--ui-muted);
+    font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  .viz-svg {
+    width: 50%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .viz-outline {
+    fill: none;
+    stroke: #e4e4e7;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    transition: stroke-width 160ms;
+  }
+
+  .viz-poly {
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+    vector-effect: non-scaling-stroke;
+    transition: fill-opacity 160ms;
+    fill-opacity: 0.18;
+  }
+
+  .viz-poly--left  { fill: #34d399; stroke: #34d399; }
+  .viz-poly--right { fill: #fb7185; stroke: #fb7185; }
+
+  .viz-svg:hover .viz-poly { fill-opacity: 0.32; }
+  .viz-svg:hover .viz-outline { stroke-width: 2.5; }
+
+  .viz-mid {
+    stroke: rgba(255, 255, 255, 0.18);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+    vector-effect: non-scaling-stroke;
+  }
+}
+
+
+@layer output {
+  .output {
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .output summary {
+    cursor: pointer;
+    color: var(--ui-muted);
+    font-size: 12px;
+    user-select: none;
+  }
+
+  .snippets {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .snippets-note {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border: 1px dashed var(--ui-border);
+    border-radius: 8px;
+    color: var(--ui-muted);
+    font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  /*
+   * Each snippet card. The whole element is a button so the entire
+   * surface is the click target; clicking copies the declaration to the
+   * clipboard. --accent comes from the per-tag rules below; hover and
+   * copy states pull the same value so the highlight stays coherent.
+   */
+  .snippet {
+    --accent: #c084fc;
+    appearance: none;
+    width: 100%;
+    text-align: left;
+    background: #0e0e10;
+    border: 1px solid var(--ui-border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: border-color 160ms, background 160ms, transform 160ms;
+  }
+
+  .snippet:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, #0e0e10);
+  }
+
+  .snippet:active {
+    transform: translateY(1px);
+  }
+
+  .snippet:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .snippet.is-copied {
+    background: color-mix(in srgb, var(--accent) 18%, #0e0e10);
+    border-color: var(--accent);
+  }
+
+  .snippet header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+    font: 12px/1.2 ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .snippet__sel {
+    color: var(--accent);
+    font-weight: 600;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  .snippet__status {
+    color: var(--ui-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: color 160ms;
+  }
+
+  .snippet.is-copied .snippet__status {
+    color: var(--accent);
+  }
+
+  .snippet__code {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace;
+    color: #c5c5c9;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 140px;
+    overflow: auto;
+  }
+
+  .snippet .tok-prop { color: #93c5fd; }
+  .snippet .tok-val  { color: #fcd34d; }
+
+  /* Per-snippet accents — distinct colors so each role is recognizable. */
+  .snippet--border { --accent: #c084fc; }   /* purple — border-shape */
+  .snippet--left   { --accent: #34d399; }   /* green  — shape--l    */
+  .snippet--right  { --accent: #fb7185; }   /* pink   — shape--r    */
+}
+
+
+@layer credits {
+  .credits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+    font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+    color: var(--ui-muted);
+  }
+
+  .credits-name strong {
+    color: var(--ui-text);
+    font-weight: 600;
+    background: linear-gradient(135deg, #c084fc, #34d399, #fb7185);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .credits-links {
+    display: inline-flex;
+    gap: 6px;
+  }
+
+  .credits-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: var(--ui-text);
+    text-decoration: none;
+    border: 1px solid var(--ui-border);
+    border-radius: 50%;
+    background: #0e0e10;
+    transition: border-color 160ms, color 160ms, transform 160ms, background 160ms;
+  }
+
+  .credits-links a:hover {
+    border-color: var(--accent, #c084fc);
+    color: var(--accent, #c084fc);
+    background: color-mix(in srgb, var(--accent, #c084fc) 10%, #0e0e10);
+  }
+
+  .credits-links a:active { transform: translateY(1px); }
+
+  .credits-links a:focus-visible {
+    outline: 2px solid var(--accent, #c084fc);
+    outline-offset: 2px;
+  }
+
+  .credits-links svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  /* Per-link accents matching brand palette. */
+  .credits-links a[aria-label="LinkedIn"] { --accent: #60a5fa; }
+  .credits-links a[aria-label="X"]        { --accent: #e4e4e7; }
+  .credits-links a[aria-label="CodePen"]  { --accent: #fbbf24; }
+}

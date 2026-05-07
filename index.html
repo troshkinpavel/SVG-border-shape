@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>border-shape · SVG → card</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
+  </head>
+  <body>
+    <main>
+      <header class="intro">
+        <h1>SVG → <span>border-shape</span></h1>
+        <p class="intro-sub">
+          Paste any SVG frame and get the matching <code>border-shape</code>
+          path plus two <code>shape-outside</code> polygons that make text
+          flow along the contour. Works in <strong>Chrome 147+</strong>
+          (Canary 146+ behind the experimental web-platform features flag).
+        </p>
+        <span class="support support--ok" role="status">
+          ✓ <code>border-shape</code> is supported in your browser
+        </span>
+        <span class="support support--bad" role="status">
+          ✗ <code>border-shape</code> isn't supported here — open this in
+          Chrome 147+ (or Canary 146+ with the experimental web-platform
+          features flag) to see the card render correctly.
+        </span>
+      </header>
+
+      <form class="controls" id="controls">
+        <label class="file">
+          <span>SVG frame</span>
+          <input type="file" id="svg-file" accept=".svg,image/svg+xml" />
+        </label>
+        <label>
+          <span>Width</span>
+          <input type="number" id="card-w" value="240" min="40" step="1" />
+        </label>
+        <label>
+          <span>Height</span>
+          <input type="number" id="card-h" value="240" min="40" step="1" />
+        </label>
+        <label class="lock">
+          <input type="checkbox" id="lock-ratio" checked />
+          <span>Lock aspect ratio</span>
+        </label>
+      </form>
+
+      <div class="presets" id="presets" aria-label="SVG presets"></div>
+
+      <div class="stage">
+        <div class="card" id="card" aria-label="card frame">
+          <p class="card-text">
+            <span class="shape shape--l" aria-hidden="true"></span>
+            <span class="shape shape--r" aria-hidden="true"></span>
+            Text wraps along the card outline via two floated
+            <code>shape-outside</code> exclusions — one on the left, one on
+            the right — generated from the same SVG path that drives
+            <code>border-shape</code>.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias aliquam atque delectus eius eveniet, ex exercitationem iure necessitatibus pariatur perferendis quas, soluta tempora veritatis! Ab ducimus eligendi eos, est ex harum iure libero maxime minima, tempore veniam voluptas voluptatibus voluptatum!
+          </p>
+        </div>
+      </div>
+
+      <figure class="viz" id="viz" aria-label="shape visualization">
+        <figcaption>
+          Shape overlay
+          <span class="viz-legend">
+            <span class="viz-key viz-key--outline">outline</span>
+            <span class="viz-key viz-key--left">.shape--l</span>
+            <span class="viz-key viz-key--right">.shape--r</span>
+          </span>
+        </figcaption>
+        <div class="viz-stage" id="viz-stage"></div>
+      </figure>
+
+      <details class="output" open>
+        <summary>Generated CSS · click any snippet to copy</summary>
+        <div id="out" class="snippets"></div>
+      </details>
+
+      <footer class="credits">
+        <span class="credits-name">made by <strong>Pavel T.</strong></span>
+        <nav class="credits-links" aria-label="social links">
+          <a href="https://www.linkedin.com/in/troshkinpavel" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3V9.5Zm6.5 0h3.83v1.57h.05c.53-1 1.84-2.07 3.79-2.07 4.05 0 4.8 2.66 4.8 6.13V21h-4v-5.06c0-1.21-.02-2.77-1.69-2.77-1.69 0-1.95 1.32-1.95 2.69V21h-4V9.5Z"/>
+            </svg>
+          </a>
+          <a href="https://x.com/troshkin_pavel" target="_blank" rel="noopener" aria-label="X" title="X">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" fill-rule="evenodd"><path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M19.753 4.659a1 1 0 0 0-1.506-1.317l-5.11 5.84L8.8 3.4A1 1 0 0 0 8 3H4a1 1 0 0 0-.8 1.6l6.437 8.582l-5.39 6.16a1 1 0 0 0 1.506 1.317l5.11-5.841L15.2 20.6a1 1 0 0 0 .8.4h4a1 1 0 0 0 .8-1.6l-6.437-8.582l5.39-6.16ZM16.5 19L6 5h1.5L18 19z"/></g></svg>
+          </a>
+          <a href="https://codepen.io/Maseone" target="_blank" rel="noopener" aria-label="CodePen" title="CodePen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" fill-rule="evenodd"><path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="m13 3.228l7.998 4.617a2 2 0 0 1 1 1.732v4.846a2 2 0 0 1-1 1.732L13 20.772a2 2 0 0 1-2 0l-7.998-4.617a2 2 0 0 1-1-1.732V9.577a2 2 0 0 1 1-1.732L11 3.228a2 2 0 0 1 2 0m-4.802 9.927L5.002 15L11 18.463v-3.69zm7.604 0L13 14.772v3.69L18.998 15zm-11.8-2.423v2.536L6.198 12zm15.996 0L17.802 12l2.196 1.268zM12 10.96L10.198 12L12 13.04L13.802 12zm-1-5.423L5.002 9l3.196 1.845L11 9.228zm2 0v3.69l2.802 1.618L18.998 9z"/></g></svg>
+          </a>
+        </nav>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
